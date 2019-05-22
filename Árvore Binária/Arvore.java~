@@ -1,0 +1,101 @@
+/**
+ * classe auxiliar que implementa o nó da árvore binária
+ */
+class No<T extends Comparable<T>> implements Comparable<T> {
+  T valor;
+  No<T> esq;
+  No<T> dir;
+  No<T> pai; // para poder caminhar na árvore para cima
+  
+  No(T x) {
+    valor = x;
+  }
+  
+  public No<T> getEsq() { return esq; }
+  public void  setEsq(No<T> no) { esq = no; }
+  
+  public No<T> getDir() { return dir; }
+  public void  setDir(No<T> no) { dir = no; }
+  
+  public No<T> getPai() { return pai; }
+  public void  setPai(No<T> no) { pai = no; }
+  
+  public T getValor() { return valor; }
+  
+  @Override
+  public int compareTo(T o) {
+    return valor.compareTo(o);
+  }  
+}
+
+
+
+public class ArvoreBalanceada<T extends Comparable<T>> {
+
+  private No<T> raiz;
+  
+  ArvoreBalanceada() {
+    raiz = null;
+  }
+
+  public No<T> getRaiz(){ return raiz; }
+  
+  
+  public No<T> inserir(T valor) {
+    No<T> x = new No<T>(valor);
+    
+    // árvore vazia -> coloca novo no como raiz
+    if (null == raiz) {
+      raiz = x;
+      return x;
+    } else {
+      return inserir(x, raiz);
+    }
+  }
+  
+  private No<T> inserir(No<T> x, No<T> raizSubArvore) {        
+    if (raizSubArvore.compareTo(x.getValor()) >= 0) {
+      // valor é menor que a raiz --> insere a esquerda
+      No<T> esquerda = raizSubArvore.getEsq();
+      if (null == esquerda) {
+        // como não existe ramo à esquerda, basta atribuir
+        raizSubArvore.setEsq(x);
+        x.setPai(raizSubArvore);
+      } else {
+        return inserir(x,esquerda);
+      }
+    } else {
+      // valor é maior que a raiz --> insere a direita
+      No<T> direita = raizSubArvore.getDir();
+      if (null == direita) {
+        // como não existe ramo à esquerda, basta atribuir
+        raizSubArvore.setDir(x);
+        x.setPai(raizSubArvore);
+      } else {
+        return inserir(x,direita);
+      }    
+    }    
+    return x;
+  }
+  
+  private No<T> pesquisar(T valor) {
+    if (null == raiz) {
+      return null; // nao tem 
+    } else {
+      return pesquisar(valor, raiz);
+    }
+  }
+  
+  private No<T> pesquisar(T valor, No<T> raizSubArvore) { 
+    int compara = raizSubArvore.compareTo(valor);
+    if (0 == compara) {
+      // achou !
+      return raizSubArvore;
+    } else if (compara > 0) {
+      return pesquisar(valor, raizSubArvore.getEsq());
+    } else {
+      return pesquisar(valor, raizSubArvore.getDir());    
+    }    
+  } 
+  
+}
